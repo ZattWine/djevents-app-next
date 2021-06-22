@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     const data = await res.json()
 
     if (res.ok) {
-      setUser(data.user)
+      setUser(data)
     } else {
       setUser(null)
     }
