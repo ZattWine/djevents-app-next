@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import Layout from '@/components/Layout'
 import Pagination from '@/components/Pagination'
 import { API_URL } from '@/config/index'
