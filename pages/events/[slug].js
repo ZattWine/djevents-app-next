@@ -9,7 +9,7 @@ import styles from '@/styles/Event.module.css'
 
 export default function EventPage({ evt }) {
   return (
-    <Layout>
+    <Layout title={evt.name}>
       <div className={styles.event}>
         <span>
           {new Date(evt.date).toLocaleDateString()} at {evt.time}

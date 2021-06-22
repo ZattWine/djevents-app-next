@@ -40,8 +40,8 @@ export default function EventMap({ evt }) {
         setViewport({ ...viewport, latitude: lat, longitude: lng })
         setLoading(false)
       } else {
-        setLat(37.7577)
-        setLng(-122.4376)
+        setLat(-0.12764739999999997)
+        setLng(51.507321899999994)
         setLoading(false)
       }
     }
