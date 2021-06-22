@@ -20,5 +20,8 @@
 }
 
 .delete {
+  border: none;
+  cursor: pointer;
   color: red;
+  font-size: 18px;
 }

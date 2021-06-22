@@ -15,13 +15,12 @@ export default function DashboardEvent({ evt, deleteHandler }) {
           <FaPencilAlt /> <span>Edit Event</span>
         </a>
       </Link>
-      <a
-        href='#'
-        className={styles.delete}
+      <button
+        className={`btn-icon ${styles.delete}`}
         onClick={() => deleteHandler(evt.id)}
       >
         <FaTimes /> <span>Delete</span>
-      </a>
+      </button>
     </div>
   )
 }
