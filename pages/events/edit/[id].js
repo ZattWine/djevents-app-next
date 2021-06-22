@@ -1,11 +1,12 @@
 import { ToastContainer, toast } from 'react-toastify'
-import { FaImage } from 'react-icons/fa'
+import { FaImage, FaTwitterSquare } from 'react-icons/fa'
 import moment from 'moment'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Image from 'next/image'
 import Layout from '@/components/Layout'
+import Modal from '@/components/Modal'
 import { API_URL } from '@/config/index'
 import styles from '@/styles/Form.module.css'
 import 'react-toastify/dist/ReactToastify.css'
@@ -24,6 +25,8 @@ export default function EditEventPage({ evt }) {
   const [imagePreview, setImagePreview] = useState(
     evt.image ? evt.image.formats.thumbnail.url : null
   )
+
+  const [showModal, setShowModal] = useState(false)
 
   const router = useRouter()
 
@@ -158,10 +161,17 @@ export default function EditEventPage({ evt }) {
       )}
 
       <div>
-        <button className='btn-secondary'>
+        <button
+          className='btn-secondary'
+          onClick={() => setShowModal(FaTwitterSquare)}
+        >
           <FaImage /> Set Image
         </button>
       </div>
+
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        Image Upload
+      </Modal>
     </Layout>
   )
 }
