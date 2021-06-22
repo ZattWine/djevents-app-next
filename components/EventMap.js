@@ -9,30 +9,42 @@ export default function EventMap({ evt }) {
   const [lng, setLng] = useState(null)
   const [loading, setLoading] = useState(true)
   const [viewport, setViewport] = useState({
-    latitude: 37.7577,
-    longitude: -122.4376,
+    latitude: -0.12764739999999997,
+    longitude: 51.507321899999994,
     width: '100%',
     height: '500px',
     zoom: 12,
   })
 
-  useEffect(() => {
-    // Get latitude & longitude from address.
-    Geocode.fromAddress(evt.address).then(
-      (response) => {
-        const { lat, lng } = response.results[0].geometry.location
+  useEffect(async () => {
+    try {
+      // Get latitude & longitude from address.
+      const response = await Geocode.fromAddress(evt.address)
+      const { lat, lng } = await response.results[0].geometry.location
+      setLat(lat)
+      setLng(lng)
+      setViewport({ ...viewport, latitude: lat, longitude: lng })
+      setLoading(false)
+    } catch (error) {
+      // try mapbox reverse geocodeing
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${evt.address}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}`
+      const response = await fetch(url)
+      const data = await response.json()
+
+      if (response.ok) {
+        // center: [longitude, latitude]
+        const lng = await data.features[0].center[0]
+        const lat = await data.features[0].center[1]
         setLat(lat)
         setLng(lng)
         setViewport({ ...viewport, latitude: lat, longitude: lng })
         setLoading(false)
-      },
-      (error) => {
+      } else {
         setLat(37.7577)
         setLng(-122.4376)
         setLoading(false)
-        console.error(error)
       }
-    )
+    }
   }, [])
 
   Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY)
