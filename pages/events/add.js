@@ -4,10 +4,11 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '@/components/Layout'
 import { API_URL } from '@/config/index'
+import { parseCookie } from '@/helpers/index'
 import styles from '@/styles/Form.module.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-export default function AddEventPage() {
+export default function AddEventPage({ token }) {
   const [values, setValues] = useState({
     name: '',
     performers: '',
@@ -30,18 +31,25 @@ export default function AddEventPage() {
 
     if (hasEmptyFields) {
       toast.error('Please fill in all fields.')
+      return
     }
 
     const res = await fetch(`${API_URL}/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(values),
     })
 
-    if (!res.ok) toast.error('Something went wrong!')
-    else {
+    if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error('No token included!')
+        return
+      }
+      toast.error('Something went wrong!')
+    } else {
       const evt = await res.json()
       router.push(`/events/${evt.slug}`)
     }
@@ -142,4 +150,11 @@ export default function AddEventPage() {
       </form>
     </Layout>
   )
+}
+
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookie(req)
+  return {
+    props: { token },
+  }
 }
