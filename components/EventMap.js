@@ -16,35 +16,39 @@ export default function EventMap({ evt }) {
     zoom: 12,
   })
 
-  useEffect(async () => {
-    try {
-      // Get latitude & longitude from address.
-      const response = await Geocode.fromAddress(evt.address)
-      const { lat, lng } = await response.results[0].geometry.location
-      setLat(lat)
-      setLng(lng)
-      setViewport({ ...viewport, latitude: lat, longitude: lng })
-      setLoading(false)
-    } catch (error) {
-      // try mapbox reverse geocodeing
-      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${evt.address}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}`
-      const response = await fetch(url)
-      const data = await response.json()
-
-      if (response.ok) {
-        // center: [longitude, latitude]
-        const lng = await data.features[0].center[0]
-        const lat = await data.features[0].center[1]
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Get latitude & longitude from address.
+        const response = await Geocode.fromAddress(evt.address)
+        const { lat, lng } = await response.results[0].geometry.location
         setLat(lat)
         setLng(lng)
         setViewport({ ...viewport, latitude: lat, longitude: lng })
         setLoading(false)
-      } else {
-        setLat(-0.12764739999999997)
-        setLng(51.507321899999994)
-        setLoading(false)
+      } catch (error) {
+        // try mapbox reverse geocodeing
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${evt.address}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}`
+        const response = await fetch(url)
+        const data = await response.json()
+
+        if (response.ok) {
+          // center: [longitude, latitude]
+          const lng = await data.features[0].center[0]
+          const lat = await data.features[0].center[1]
+          setLat(lat)
+          setLng(lng)
+          setViewport({ ...viewport, latitude: lat, longitude: lng })
+          setLoading(false)
+        } else {
+          setLat(-0.12764739999999997)
+          setLng(51.507321899999994)
+          setLoading(false)
+        }
       }
     }
+
+    fetchData()
   }, [])
 
   Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY)
